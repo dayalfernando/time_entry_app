@@ -67,36 +67,66 @@ class HomeScreen extends StatelessWidget {
               // Show notifications
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white, size: 28),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Confirm Logout'),
-                    content: const Text('Are you sure you want to logout?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text('Cancel', style: TextStyle(color: primaryColor)),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Provider.of<UserProvider>(context, listen: false).logout();
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            (route) => false,
-                          );
-                        },
-                        child: Text('Logout', style: TextStyle(color: primaryColor)),
-                      ),
-                    ],
-                  );
-                },
-              );
+          PopupMenuButton<String>(
+            offset: const Offset(0, 40),
+            icon: const UserAvatar(
+              user: User(
+                id: '1',
+                fullName: 'John Doe',
+                email: 'john.doe@example.com',
+                role: 'Engineer',
+              ),
+              size: 32,
+            ),
+            onSelected: (value) {
+              if (value == 'logout') {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirm Logout'),
+                      content: const Text('Are you sure you want to logout?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel', style: TextStyle(color: primaryColor)),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Provider.of<UserProvider>(context, listen: false).logout();
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                              (route) => false,
+                            );
+                          },
+                          child: Text('Logout', style: TextStyle(color: primaryColor)),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'profile',
+                child: ListTile(
+                  leading: const Icon(Icons.person_outline),
+                  title: const Text('Profile'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem<String>(
+                value: 'logout',
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+            ],
           ),
         ],
       ),
