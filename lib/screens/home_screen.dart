@@ -71,10 +71,10 @@ class HomeScreen extends StatelessWidget {
             offset: const Offset(0, 40),
             icon: const UserAvatar(
               user: User(
-                id: '1',
+                username: 'john.doe',
+                password: 'dummy123',
+                role: UserRole.engineer,
                 fullName: 'John Doe',
-                email: 'john.doe@example.com',
-                role: 'Engineer',
               ),
               size: 32,
             ),
