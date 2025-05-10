@@ -184,7 +184,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: 120,
+                      height: 85,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: taskProvider.todaysTasks.isEmpty ? 1 : taskProvider.todaysTasks.length,
@@ -213,14 +213,14 @@ class HomeScreen extends StatelessWidget {
                                   Icon(
                                     Icons.calendar_today_outlined,
                                     color: Colors.grey[400],
-                                    size: 24,
+                                    size: 20,
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 4),
                                   Text(
                                     'No tasks scheduled for today',
                                     style: TextStyle(
                                       color: Colors.grey[600],
-                                      fontSize: 14,
+                                      fontSize: 13,
                                     ),
                                   ),
                                 ],
@@ -229,80 +229,90 @@ class HomeScreen extends StatelessWidget {
                           }
 
                           final task = taskProvider.todaysTasks[index];
-                          return Container(
-                            width: 280,
-                            margin: const EdgeInsets.only(right: 12),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: task.isCompleted
-                                    ? primaryColor.withOpacity(0.2)
-                                    : Colors.grey.withOpacity(0.2),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 2),
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TaskDetailsScreen(task: task),
                                 ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.access_time,
-                                      size: 16,
-                                      color: primaryColor,
+                              );
+                            },
+                            child: Container(
+                              width: 200,
+                              margin: const EdgeInsets.only(right: 12),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: task.isCompleted
+                                      ? primaryColor.withOpacity(0.2)
+                                      : Colors.grey.withOpacity(0.2),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    task.clientName,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${DateFormat('HH:mm').format(task.startTime)} - ${DateFormat('HH:mm').format(task.endTime)}',
-                                      style: TextStyle(
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.access_time,
+                                        size: 14,
                                         color: primaryColor,
-                                        fontSize: 14,
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: task.isCompleted
-                                            ? primaryColor.withOpacity(0.1)
-                                            : Colors.grey[100],
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        task.isCompleted ? 'Completed' : 'Pending',
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${DateFormat('HH:mm').format(task.startTime)}',
                                         style: TextStyle(
-                                          color: task.isCompleted
-                                              ? primaryColor
-                                              : Colors.grey[600],
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
+                                          color: primaryColor,
+                                          fontSize: 13,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  task.clientName,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                      const Spacer(),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: task.isCompleted
+                                              ? primaryColor.withOpacity(0.1)
+                                              : Colors.grey[100],
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          task.isCompleted ? 'Done' : 'Due',
+                                          style: TextStyle(
+                                            color: task.isCompleted
+                                                ? primaryColor
+                                                : Colors.grey[600],
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },
