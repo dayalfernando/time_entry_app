@@ -78,6 +78,9 @@ class HomeScreen extends StatelessWidget {
               ),
               size: 32,
             ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             onSelected: (value) {
               if (value == 'logout') {
                 showDialog(
@@ -106,18 +109,38 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                 );
+              } else if (value == 'settings') {
+                // TODO: Navigate to settings screen
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Settings coming soon!')),
+                );
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               PopupMenuItem<String>(
                 value: 'profile',
                 child: ListTile(
-                  leading: const Icon(Icons.person_outline),
-                  title: const Text('Profile'),
+                  leading: Icon(Icons.person_outline, color: primaryColor),
+                  title: Text(
+                    'John Doe',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                  ),
+                  subtitle: const Text('Engineer'),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
               const PopupMenuDivider(),
+              PopupMenuItem<String>(
+                value: 'settings',
+                child: ListTile(
+                  leading: const Icon(Icons.settings_outlined),
+                  title: const Text('Settings'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
               PopupMenuItem<String>(
                 value: 'logout',
                 child: ListTile(
