@@ -246,9 +246,11 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: task.isCompleted
-                                      ? primaryColor.withOpacity(0.2)
-                                      : Colors.grey.withOpacity(0.2),
+                                  color: task.status == TaskStatus.completed
+                                      ? Colors.green.withOpacity(0.2)
+                                      : task.status == TaskStatus.inProgress
+                                          ? accentColor.withOpacity(0.2)
+                                          : primaryColor.withOpacity(0.2),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
@@ -293,17 +295,21 @@ class HomeScreen extends StatelessWidget {
                                           vertical: 2,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: task.isCompleted
-                                              ? primaryColor.withOpacity(0.1)
-                                              : Colors.grey[100],
+                                          color: task.status == TaskStatus.completed
+                                              ? Colors.green.withOpacity(0.1)
+                                              : task.status == TaskStatus.inProgress
+                                                  ? accentColor.withOpacity(0.1)
+                                                  : primaryColor.withOpacity(0.1),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Text(
-                                          task.isCompleted ? 'Done' : 'Due',
+                                          task.status.displayName,
                                           style: TextStyle(
-                                            color: task.isCompleted
-                                                ? primaryColor
-                                                : Colors.grey[600],
+                                            color: task.status == TaskStatus.completed
+                                                ? Colors.green
+                                                : task.status == TaskStatus.inProgress
+                                                    ? accentColor
+                                                    : primaryColor,
                                             fontSize: 11,
                                             fontWeight: FontWeight.w500,
                                           ),
