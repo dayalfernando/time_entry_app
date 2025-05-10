@@ -33,7 +33,12 @@ class HomeScreen extends StatelessWidget {
       appBar: AppHeader(
         title: 'UPSA Time Entry',
         additionalActions: [
-          IconButton(
+          PopupMenuButton<void>(
+            offset: const Offset(0, 40),
+            position: PopupMenuPosition.under,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             icon: Stack(
               children: [
                 const Icon(Icons.notifications_outlined, color: Colors.white, size: 28),
@@ -64,140 +69,144 @@ class HomeScreen extends StatelessWidget {
                   ),
               ],
             ),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      constraints: const BoxConstraints(maxHeight: 400),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: primaryColor,
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                            ),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  'Notifications',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const Spacer(),
-                                if (notificationProvider.unreadCount > 0)
-                                  TextButton(
-                                    onPressed: () {
-                                      notificationProvider.markAllAsRead();
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(
-                                      'Mark all as read',
-                                      style: TextStyle(
-                                        color: accentColor,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                              ],
+            onClosed: () {
+              // Mark all as read when dropdown is closed
+              notificationProvider.markAllAsRead();
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem<void>(
+                enabled: false,
+                child: SizedBox(
+                  width: 320,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey.withOpacity(0.2),
                             ),
                           ),
-                          Flexible(
-                            child: notificationProvider.notifications.isEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.all(24),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.notifications_none_outlined,
-                                          size: 48,
-                                          color: Colors.grey[400],
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          'No notifications yet',
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: notificationProvider.notifications.length,
-                                    itemBuilder: (context, index) {
-                                      final notification = notificationProvider.notifications[index];
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          color: notification['isRead']
-                                              ? Colors.white
-                                              : primaryColor.withOpacity(0.05),
-                                          border: Border(
-                                            bottom: BorderSide(
-                                              color: Colors.grey.withOpacity(0.2),
-                                            ),
-                                          ),
-                                        ),
-                                        child: ListTile(
-                                          title: Text(
-                                            notification['title'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          subtitle: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                notification['message'],
-                                                style: TextStyle(
-                                                  color: Colors.grey[600],
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Text(
-                                                _formatTimestamp(notification['timestamp']),
-                                                style: TextStyle(
-                                                  color: Colors.grey[500],
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          contentPadding: const EdgeInsets.symmetric(
-                                            horizontal: 16,
-                                            vertical: 8,
-                                          ),
-                                        ),
-                                      );
-                                    },
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Notifications',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const Spacer(),
+                            if (notificationProvider.unreadCount > 0)
+                              TextButton(
+                                onPressed: () {
+                                  notificationProvider.markAllAsRead();
+                                  Navigator.pop(context);
+                                },
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
                                   ),
+                                ),
+                                child: Text(
+                                  'Mark all as read',
+                                  style: TextStyle(
+                                    color: accentColor,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (notificationProvider.notifications.isEmpty)
+                PopupMenuItem<void>(
+                  enabled: false,
+                  height: 100,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.notifications_none_outlined,
+                          size: 32,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'No notifications yet',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                ...notificationProvider.notifications.map((notification) {
+                  return PopupMenuItem<void>(
+                    height: 80,
+                    enabled: false,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: notification['isRead']
+                            ? Colors.white
+                            : primaryColor.withOpacity(0.05),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.grey.withOpacity(0.1),
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            notification['title'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            notification['message'],
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 13,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _formatTimestamp(notification['timestamp']),
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
                     ),
                   );
-                },
-              ).then((_) {
-                // Mark notifications as read when dialog is closed
-                notificationProvider.markAllAsRead();
-              });
-            },
+                }).toList(),
+            ],
           ),
           PopupMenuButton<String>(
             offset: const Offset(0, 40),
