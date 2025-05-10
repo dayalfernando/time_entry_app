@@ -180,40 +180,13 @@ class HomeScreen extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Today's Tasks",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryColor,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const TaskEntryScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'Add New',
-                                        style: TextStyle(
-                                          color: accentColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Icon(Icons.add, color: accentColor, size: 20),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              "Today's Tasks",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: primaryColor,
+                              ),
                             ),
                             const SizedBox(height: 12),
                             SizedBox(
@@ -224,7 +197,7 @@ class HomeScreen extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   if (taskProvider.todaysTasks.isEmpty) {
                                     return Container(
-                                      width: 280,
+                                      width: MediaQuery.of(context).size.width - 48, // Full width minus padding
                                       padding: const EdgeInsets.all(16),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
