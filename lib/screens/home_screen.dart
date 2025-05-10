@@ -10,6 +10,7 @@ import '../widgets/company_logo.dart';
 import '../models/week_data.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/app_header.dart';
+import '../models/task_status.dart';
 import 'task_entry_screen.dart';
 import 'task_details_screen.dart';
 import 'package:intl/intl.dart';
