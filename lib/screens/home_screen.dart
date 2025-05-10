@@ -65,7 +65,138 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             onPressed: () {
-              // Show notifications
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      constraints: const BoxConstraints(maxHeight: 400),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  'Notifications',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (notificationProvider.unreadCount > 0)
+                                  TextButton(
+                                    onPressed: () {
+                                      notificationProvider.markAllAsRead();
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'Mark all as read',
+                                      style: TextStyle(
+                                        color: accentColor,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                            child: notificationProvider.notifications.isEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.all(24),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.notifications_none_outlined,
+                                          size: 48,
+                                          color: Colors.grey[400],
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          'No notifications yet',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: notificationProvider.notifications.length,
+                                    itemBuilder: (context, index) {
+                                      final notification = notificationProvider.notifications[index];
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          color: notification['isRead']
+                                              ? Colors.white
+                                              : primaryColor.withOpacity(0.05),
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              color: Colors.grey.withOpacity(0.2),
+                                            ),
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(
+                                            notification['title'],
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                notification['message'],
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                _formatTimestamp(notification['timestamp']),
+                                                style: TextStyle(
+                                                  color: Colors.grey[500],
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          contentPadding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ).then((_) {
+                // Mark notifications as read when dialog is closed
+                notificationProvider.markAllAsRead();
+              });
             },
           ),
           PopupMenuButton<String>(
@@ -486,5 +617,22 @@ class HomeScreen extends StatelessWidget {
     final nextMonday = monday.add(const Duration(days: 7));
     return date.isAfter(monday.subtract(const Duration(days: 1))) && 
            date.isBefore(nextMonday);
+  }
+
+  String _formatTimestamp(DateTime timestamp) {
+    final now = DateTime.now();
+    final difference = now.difference(timestamp);
+
+    if (difference.inMinutes < 1) {
+      return 'Just now';
+    } else if (difference.inHours < 1) {
+      return '${difference.inMinutes}m ago';
+    } else if (difference.inDays < 1) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays}d ago';
+    } else {
+      return DateFormat('MMM d, y').format(timestamp);
+    }
   }
 }
