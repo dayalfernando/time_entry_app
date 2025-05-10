@@ -9,13 +9,16 @@ class TaskProvider with ChangeNotifier {
 
   List<Task> get tasks => _tasks;
 
-  List<Task> getTodaysTasks() {
+  List<Task> get todaysTasks {
     final now = DateTime.now();
-    return _tasks.where((task) =>
-      task.startTime.year == now.year &&
-      task.startTime.month == now.month &&
-      task.startTime.day == now.day
-    ).toList();
+    return _tasks
+      .where((task) =>
+        task.startTime.year == now.year &&
+        task.startTime.month == now.month &&
+        task.startTime.day == now.day
+      )
+      .toList()
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
   }
 
   Future<void> loadTasks() async {
