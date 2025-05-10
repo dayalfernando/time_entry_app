@@ -13,10 +13,19 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: size / 2,
-      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-      child: _buildAvatarContent(context),
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: const Color(0xFFFFB800), // UPSA gold
+          width: 2,
+        ),
+      ),
+      child: CircleAvatar(
+        radius: size / 2,
+        backgroundColor: Colors.white,
+        child: _buildAvatarContent(context),
+      ),
     );
   }
 
@@ -33,9 +42,9 @@ class UserAvatar extends StatelessWidget {
     return Text(
       initial,
       style: TextStyle(
-        color: Theme.of(context).colorScheme.primary,
+        color: const Color(0xFF1B3764), // UPSA deep blue
         fontWeight: FontWeight.bold,
-        fontSize: size * 0.5,
+        fontSize: size * 0.4,
       ),
     );
   }
