@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                   ),
               ],
             ),
-            onClosed: () {
+            onCanceled: () {
               // Mark all as read when dropdown is closed
               notificationProvider.markAllAsRead();
             },
