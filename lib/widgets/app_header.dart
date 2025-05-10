@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/providers/user_provider.dart';
-import 'user_profile_widget.dart';
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -57,13 +56,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         if (additionalActions != null) ...additionalActions!,
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: UserProfileWidget(
-            user: userProvider.currentUser,
-            avatarSize: 32,
-          ),
-        ),
       ],
     );
   }
