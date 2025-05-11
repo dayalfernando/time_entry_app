@@ -210,13 +210,8 @@ class HomeScreen extends StatelessWidget {
           ),
           PopupMenuButton<String>(
             offset: const Offset(0, 40),
-            icon: const UserAvatar(
-              user: User(
-                username: 'john.doe',
-                password: 'dummy123',
-                role: UserRole.engineer,
-                fullName: 'John Doe',
-              ),
+            icon: UserAvatar(
+              user: userProvider.currentUser,
               size: 32,
             ),
             shape: RoundedRectangleBorder(
@@ -263,13 +258,15 @@ class HomeScreen extends StatelessWidget {
                 child: ListTile(
                   leading: Icon(Icons.person_outline, color: primaryColor),
                   title: Text(
-                    'John Doe',
+                    userProvider.currentUser?.fullName ?? '',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: primaryColor,
                     ),
                   ),
-                  subtitle: const Text('Engineer'),
+                  subtitle: Text(
+                    userProvider.currentUser?.role.displayName ?? '',
+                  ),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),

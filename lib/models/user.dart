@@ -30,16 +30,22 @@ class User {
   // Dummy users for testing
   static const List<User> dummyUsers = [
     User(
-      username: 'admin',
+      username: 'dayal.fernando',
       password: 'admin123',
       role: UserRole.admin,
-      fullName: 'Admin User',
+      fullName: 'Dayal Fernando',
     ),
     User(
-      username: 'engineer',
+      username: 'john.smith',
       password: 'engineer123',
       role: UserRole.engineer,
-      fullName: 'Engineer User',
+      fullName: 'John Smith',
+    ),
+    User(
+      username: 'sarah.wilson',
+      password: 'engineer123',
+      role: UserRole.engineer,
+      fullName: 'Sarah Wilson',
     ),
   ];
 
