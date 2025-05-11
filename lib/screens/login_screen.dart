@@ -11,6 +11,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  static const String demoCredentialsText = '''Demo Credentials:
+Admin: dayal.fernando / admin123
+Engineer: john.smith / engineer123
+Engineer: sarah.wilson / engineer123''';
+
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -172,12 +177,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   
                   // Demo Credentials
                   const SizedBox(height: 24),
-                  const Text(
-                    'Demo Credentials:\n'
-                    'Admin: admin / admin123\n'
-                    'Engineer: engineer / engineer123',
+                  Text(
+                    demoCredentialsText,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 12,
                     ),
