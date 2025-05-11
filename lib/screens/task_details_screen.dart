@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
+import '../models/user.dart';
 import 'task_entry_screen.dart';
 import 'task_start_checklist_screen.dart';
 import 'task_completion_screen.dart';
 import 'package:provider/provider.dart';
 import '../services/providers/task_provider.dart';
+import '../services/providers/user_provider.dart';
 import 'package:intl/intl.dart';
 
 class TaskDetailsScreen extends StatelessWidget {
@@ -12,11 +14,26 @@ class TaskDetailsScreen extends StatelessWidget {
 
   const TaskDetailsScreen({super.key, required this.task});
 
+  String _getAssignedUserName(String userId) {
+    final user = User.dummyUsers.firstWhere(
+      (user) => user.username == userId,
+      orElse: () => const User(
+        username: '',
+        password: '',
+        role: UserRole.engineer,
+        fullName: 'Unknown User',
+      ),
+    );
+    return user.fullName;
+  }
+
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     final bool hasStarted = task.actualStartTime != null;
     final bool hasEnded = task.actualEndTime != null;
+    final bool isAdmin = userProvider.currentUser?.role == UserRole.admin;
     
     return Scaffold(
       appBar: AppBar(
@@ -78,6 +95,15 @@ class TaskDetailsScreen extends StatelessWidget {
               icon: Icons.business,
             ),
             const SizedBox(height: 16),
+            if (isAdmin) ...[
+              _buildInfoCard(
+                context,
+                title: 'Assigned Engineer',
+                content: _getAssignedUserName(task.userId),
+                icon: Icons.assignment_ind,
+              ),
+              const SizedBox(height: 16),
+            ],
             _buildInfoCard(
               context,
               title: 'Date & Time',

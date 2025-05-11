@@ -367,98 +367,7 @@ class HomeScreen extends StatelessWidget {
                           }
 
                           final task = taskProvider.todaysTasks[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TaskDetailsScreen(task: task),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              width: 200,
-                              margin: const EdgeInsets.only(right: 12),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: task.status == TaskStatus.completed
-                                      ? Colors.green.withOpacity(0.2)
-                                      : task.status == TaskStatus.inProgress
-                                          ? accentColor.withOpacity(0.2)
-                                          : primaryColor.withOpacity(0.2),
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    task.clientName,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time,
-                                        size: 14,
-                                        color: primaryColor,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${DateFormat('HH:mm').format(task.startTime)}',
-                                        style: TextStyle(
-                                          color: primaryColor,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: task.status == TaskStatus.completed
-                                              ? Colors.green.withOpacity(0.1)
-                                              : task.status == TaskStatus.inProgress
-                                                  ? accentColor.withOpacity(0.1)
-                                                  : primaryColor.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Text(
-                                          task.status.displayName,
-                                          style: TextStyle(
-                                            color: task.status == TaskStatus.completed
-                                                ? Colors.green
-                                                : task.status == TaskStatus.inProgress
-                                                    ? accentColor
-                                                    : primaryColor,
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          return _buildTaskCard(context, task);
                         },
                       ),
                     ),
@@ -562,6 +471,114 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildTaskCard(BuildContext context, Task task) {
+    final theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final isAdmin = userProvider.currentUser?.role == UserRole.admin;
+    
+    String getAssignedUserName(String userId) {
+      final user = User.dummyUsers.firstWhere(
+        (user) => user.username == userId,
+        orElse: () => const User(
+          username: '',
+          password: '',
+          role: UserRole.engineer,
+          fullName: 'Unknown User',
+        ),
+      );
+      return user.fullName;
+    }
+
+    Color getStatusColor() {
+      switch (task.status) {
+        case TaskStatus.pending:
+          return Colors.grey;
+        case TaskStatus.inProgress:
+          return theme.colorScheme.secondary; // Gold color
+        case TaskStatus.completed:
+          return Colors.green;
+      }
+    }
+
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TaskDetailsScreen(task: task),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          task.clientName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        if (isAdmin) ...[
+                          Text(
+                            'Assigned to: ${getAssignedUserName(task.userId)}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                        ],
+                        Text(
+                          '${_formatTime(task.startTime)} - ${_formatTime(task.endTime)}',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: getStatusColor().withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: getStatusColor(),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      task.status.name,
+                      style: TextStyle(
+                        color: getStatusColor(),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   List<WeekData> _groupTasksByWeek(List<Task> tasks) {
     if (tasks.isEmpty) return [];
 
@@ -640,5 +657,9 @@ class HomeScreen extends StatelessWidget {
     } else {
       return DateFormat('MMM d, y').format(timestamp);
     }
+  }
+
+  String _formatTime(DateTime time) {
+    return DateFormat('HH:mm').format(time);
   }
 }
