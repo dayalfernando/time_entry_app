@@ -18,6 +18,10 @@ class TaskService {
     return List.from(_tasks);
   }
 
+  Future<List<Task>> getTasksForUser(String userId) async {
+    return _tasks.where((task) => task.assignedUserId == userId).toList();
+  }
+
   Future<Task?> getTaskById(int id) async {
     try {
       return _tasks.firstWhere((task) => task.id == id);
@@ -39,11 +43,12 @@ class TaskService {
     _tasks.removeWhere((task) => task.id == id);
   }
 
-  Future<List<Task>> getTasksForDate(DateTime date) async {
+  Future<List<Task>> getTasksForDate(DateTime date, {String? userId}) async {
     return _tasks.where((task) => 
       task.date.year == date.year && 
       task.date.month == date.month && 
-      task.date.day == date.day
+      task.date.day == date.day &&
+      (userId == null || task.assignedUserId == userId)
     ).toList();
   }
 } 

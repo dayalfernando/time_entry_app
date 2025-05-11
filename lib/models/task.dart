@@ -6,13 +6,14 @@ class Task {
   final DateTime date;
   final DateTime startTime;
   final DateTime endTime;
-  final int breakDuration; // in minutes
-  final int travelTime; // in minutes
+  final int breakDuration;
+  final int travelTime;
   final String comments;
   final bool isCompleted;
   final DateTime? actualStartTime;
   final DateTime? actualEndTime;
   final TaskStatus status;
+  final String userId;
 
   Task({
     this.id,
@@ -23,6 +24,7 @@ class Task {
     required this.breakDuration,
     required this.travelTime,
     required this.comments,
+    required this.userId,
     this.isCompleted = false,
     this.actualStartTime,
     this.actualEndTime,
@@ -43,6 +45,7 @@ class Task {
       'actualStartTime': actualStartTime?.toIso8601String(),
       'actualEndTime': actualEndTime?.toIso8601String(),
       'status': status.index,
+      'userId': userId,
     };
   }
 
@@ -56,6 +59,7 @@ class Task {
       breakDuration: map['breakDuration'] as int,
       travelTime: map['travelTime'] as int,
       comments: map['comments'] as String,
+      userId: map['userId'] as String,
       isCompleted: (map['isCompleted'] as int) == 1,
       actualStartTime: map['actualStartTime'] != null ? DateTime.parse(map['actualStartTime'] as String) : null,
       actualEndTime: map['actualEndTime'] != null ? DateTime.parse(map['actualEndTime'] as String) : null,
@@ -76,6 +80,7 @@ class Task {
     DateTime? actualStartTime,
     DateTime? actualEndTime,
     TaskStatus? status,
+    String? userId,
   }) {
     return Task(
       id: id ?? this.id,
@@ -86,10 +91,11 @@ class Task {
       breakDuration: breakDuration ?? this.breakDuration,
       travelTime: travelTime ?? this.travelTime,
       comments: comments ?? this.comments,
+      userId: userId ?? this.userId,
       isCompleted: isCompleted ?? this.isCompleted,
       actualStartTime: actualStartTime ?? this.actualStartTime,
       actualEndTime: actualEndTime ?? this.actualEndTime,
       status: status ?? this.status,
     );
   }
-} 
+}
