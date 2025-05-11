@@ -322,7 +322,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: 85,
+                      height: 120, // Increased height to accommodate assigned user info
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: taskProvider.todaysTasks.isEmpty ? 1 : taskProvider.todaysTasks.length,
@@ -367,7 +367,11 @@ class HomeScreen extends StatelessWidget {
                           }
 
                           final task = taskProvider.todaysTasks[index];
-                          return _buildTaskCard(context, task);
+                          return Container(
+                            width: 300, // Fixed width for task cards
+                            margin: const EdgeInsets.only(right: 12),
+                            child: _buildTaskCard(context, task),
+                          );
                         },
                       ),
                     ),
@@ -502,7 +506,9 @@ class HomeScreen extends StatelessWidget {
 
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -512,12 +518,14 @@ class HomeScreen extends StatelessWidget {
             ),
           );
         },
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Column(
@@ -529,6 +537,8 @@ class HomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
                         if (isAdmin) ...[
@@ -536,8 +546,10 @@ class HomeScreen extends StatelessWidget {
                             'Assigned to: ${getAssignedUserName(task.userId)}',
                             style: TextStyle(
                               color: Colors.grey[600],
-                              fontSize: 14,
+                              fontSize: 13,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
                         ],
@@ -545,12 +557,13 @@ class HomeScreen extends StatelessWidget {
                           '${_formatTime(task.startTime)} - ${_formatTime(task.endTime)}',
                           style: TextStyle(
                             color: Colors.grey[600],
-                            fontSize: 14,
+                            fontSize: 13,
                           ),
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
@@ -562,11 +575,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      task.status.name,
+                      task.status.name.toUpperCase(),
                       style: TextStyle(
                         color: getStatusColor(),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),

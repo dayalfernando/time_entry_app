@@ -38,9 +38,16 @@ class TaskProvider with ChangeNotifier {
   }
 
   Future<Task> addTask(Task task) async {
+    // For admin users, ensure the task has a valid userId
+    if (_currentUserId == null && (task.userId.isEmpty || task.userId == 'admin')) {
+      throw Exception('Admin must assign task to an engineer');
+    }
+    
+    // For engineers, ensure they can only create tasks for themselves
     if (_currentUserId != null && task.userId != _currentUserId) {
       throw Exception('Cannot create tasks for other users');
     }
+
     final newTask = await _service.createTask(task);
     _tasks.add(newTask);
     notifyListeners();
@@ -48,9 +55,16 @@ class TaskProvider with ChangeNotifier {
   }
 
   Future<void> updateTask(Task task) async {
+    // For admin users, ensure the task has a valid userId
+    if (_currentUserId == null && (task.userId.isEmpty || task.userId == 'admin')) {
+      throw Exception('Admin must assign task to an engineer');
+    }
+    
+    // For engineers, ensure they can only update their own tasks
     if (_currentUserId != null && task.userId != _currentUserId) {
       throw Exception('Cannot update tasks for other users');
     }
+
     await _service.updateTask(task);
     final index = _tasks.indexWhere((t) => t.id == task.id);
     if (index != -1) {
