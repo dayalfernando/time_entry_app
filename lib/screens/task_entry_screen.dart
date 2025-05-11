@@ -157,7 +157,7 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
                           decoration: const InputDecoration(
                             labelText: 'Assign To',
                             border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.person_assign),
+                            prefixIcon: Icon(Icons.assignment_ind),
                           ),
                           items: User.dummyUsers
                               .where((user) => user.role == UserRole.engineer)
