@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import '../models/task.dart';
+import '../models/user.dart';
 import '../services/providers/task_provider.dart';
 import '../services/providers/notification_provider.dart';
 import '../services/providers/user_provider.dart';
@@ -39,7 +40,9 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
         travelTime: int.parse(formData['travelTime'].toString()),
         comments: formData['comments'] as String? ?? '',
         isCompleted: widget.task?.isCompleted ?? false,
-        userId: widget.task?.userId ?? userProvider.currentUser?.username ?? '',
+        userId: userProvider.currentUser?.role == UserRole.admin 
+          ? (formData['assignedUser'] as String? ?? userProvider.currentUser!.username)
+          : userProvider.currentUser!.username,
       );
       
       if (widget.task == null) {
@@ -85,6 +88,9 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
       0, // 0 minutes
     );
 
+    final userProvider = Provider.of<UserProvider>(context);
+    final isAdmin = userProvider.currentUser?.role == UserRole.admin;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -105,6 +111,7 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
                   'endTime': defaultEndTime,
                   'breakDuration': '30',
                   'travelTime': '30',
+                  'assignedUser': userProvider.currentUser?.username,
                 }
               : {
                   'clientName': widget.task!.clientName,
@@ -114,6 +121,7 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
                   'breakDuration': widget.task!.breakDuration.toString(),
                   'travelTime': widget.task!.travelTime.toString(),
                   'comments': widget.task!.comments,
+                  'assignedUser': widget.task!.userId,
                 },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -142,6 +150,25 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
                         ),
                         validator: FormBuilderValidators.required(),
                       ),
+                      if (isAdmin) ...[
+                        const SizedBox(height: 16),
+                        FormBuilderDropdown<String>(
+                          name: 'assignedUser',
+                          decoration: const InputDecoration(
+                            labelText: 'Assign To',
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.person_assign),
+                          ),
+                          items: User.dummyUsers
+                              .where((user) => user.role == UserRole.engineer)
+                              .map((user) => DropdownMenuItem(
+                                    value: user.username,
+                                    child: Text('${user.fullName} (${user.username})'),
+                                  ))
+                              .toList(),
+                          validator: FormBuilderValidators.required(),
+                        ),
+                      ],
                     ],
                   ),
                 ),
