@@ -19,7 +19,7 @@ class TaskService {
   }
 
   Future<List<Task>> getTasksForUser(String userId) async {
-    return _tasks.where((task) => task.assignedUserId == userId).toList();
+    return _tasks.where((task) => task.userId == userId).toList();
   }
 
   Future<Task?> getTaskById(int id) async {
@@ -48,7 +48,7 @@ class TaskService {
       task.date.year == date.year && 
       task.date.month == date.month && 
       task.date.day == date.day &&
-      (userId == null || task.assignedUserId == userId)
+      (userId == null || task.userId == userId)
     ).toList();
   }
 } 

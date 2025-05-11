@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import '../models/task.dart';
 import '../services/providers/task_provider.dart';
 import '../services/providers/notification_provider.dart';
+import '../services/providers/user_provider.dart';
 import 'task_list_screen.dart';
 import '../widgets/app_drawer.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +25,10 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
   void _submitForm() {
     if (_formKey.currentState!.saveAndValidate()) {
       final formData = _formKey.currentState!.value;
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+      final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+
       final task = Task(
         id: widget.task?.id,
         clientName: formData['clientName'] as String,
@@ -34,10 +39,8 @@ class _TaskEntryScreenState extends State<TaskEntryScreen> {
         travelTime: int.parse(formData['travelTime'].toString()),
         comments: formData['comments'] as String? ?? '',
         isCompleted: widget.task?.isCompleted ?? false,
+        userId: widget.task?.userId ?? userProvider.currentUser?.username ?? '',
       );
-      
-      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
-      final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
       
       if (widget.task == null) {
         taskProvider.addTask(task);
