@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/providers/user_provider.dart';
+import '../services/providers/task_provider.dart';
+import '../models/user.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -35,10 +37,20 @@ Engineer: sarah.wilson / engineer123''';
     setState(() => _isLoading = true);
 
     try {
-      final success = await Provider.of<UserProvider>(context, listen: false)
-          .login(_usernameController.text, _passwordController.text);
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+      
+      final success = await userProvider.login(_usernameController.text, _passwordController.text);
 
       if (success && context.mounted) {
+        // Set up task provider with current user
+        final currentUser = userProvider.currentUser;
+        if (currentUser?.role == UserRole.engineer) {
+          taskProvider.setCurrentUser(currentUser!.username);
+        } else {
+          taskProvider.setCurrentUser(''); // Admin sees all tasks
+        }
+        
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),

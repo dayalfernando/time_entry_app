@@ -11,7 +11,7 @@ class TaskProvider with ChangeNotifier {
   List<Task> get tasks => _tasks;
 
   void setCurrentUser(String userId) {
-    _currentUserId = userId;
+    _currentUserId = userId.isEmpty ? null : userId; // Empty userId means admin access
     loadTasks(); // Reload tasks for the new user
   }
 
@@ -32,7 +32,7 @@ class TaskProvider with ChangeNotifier {
     if (_currentUserId != null) {
       _tasks = await _service.getTasksForUser(_currentUserId!);
     } else {
-      _tasks = await _service.getAllTasks();
+      _tasks = await _service.getAllTasks(); // Admin gets all tasks
     }
     notifyListeners();
   }
