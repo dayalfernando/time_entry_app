@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import '../../models/task.dart';
 import '../../models/task_status.dart';
 import '../task_service.dart';
+import '../notification_provider.dart';
+import 'package:intl/intl.dart';
 
 class TaskProvider with ChangeNotifier {
   final TaskService _service = TaskService();
@@ -50,6 +52,24 @@ class TaskProvider with ChangeNotifier {
 
     final newTask = await _service.createTask(task);
     _tasks.add(newTask);
+    
+    // Add notification for the assigned user
+    final notificationProvider = NotificationProvider();
+    if (_currentUserId == null) {
+      // Admin creating task for engineer
+      notificationProvider.addNotification(
+        'New Task Assigned',
+        'Task for ${task.clientName} on ${DateFormat('MMM d, y').format(task.date)}',
+        userId: task.userId,
+      );
+    } else {
+      // Engineer creating their own task
+      notificationProvider.addNotification(
+        'New Task Created',
+        'Task for ${task.clientName} on ${DateFormat('MMM d, y').format(task.date)}',
+      );
+    }
+    
     notifyListeners();
     return newTask;
   }
@@ -68,7 +88,19 @@ class TaskProvider with ChangeNotifier {
     await _service.updateTask(task);
     final index = _tasks.indexWhere((t) => t.id == task.id);
     if (index != -1) {
+      final oldTask = _tasks[index];
       _tasks[index] = task;
+      
+      // Add notification if task assignment changed
+      if (_currentUserId == null && oldTask.userId != task.userId) {
+        final notificationProvider = NotificationProvider();
+        notificationProvider.addNotification(
+          'Task Reassigned',
+          'Task for ${task.clientName} has been assigned to you',
+          userId: task.userId,
+        );
+      }
+      
       notifyListeners();
     }
   }

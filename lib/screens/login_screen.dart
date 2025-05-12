@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/providers/user_provider.dart';
 import '../services/providers/task_provider.dart';
+import '../services/providers/notification_provider.dart';
 import '../models/user.dart';
 import 'home_screen.dart';
 
@@ -39,6 +40,7 @@ Engineer: sarah.wilson / engineer123''';
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       final taskProvider = Provider.of<TaskProvider>(context, listen: false);
+      final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
       
       final success = await userProvider.login(_usernameController.text, _passwordController.text);
 
@@ -47,8 +49,10 @@ Engineer: sarah.wilson / engineer123''';
         final currentUser = userProvider.currentUser;
         if (currentUser?.role == UserRole.engineer) {
           taskProvider.setCurrentUser(currentUser!.username);
+          notificationProvider.setCurrentUser(currentUser.username);
         } else {
           taskProvider.setCurrentUser(''); // Admin sees all tasks
+          notificationProvider.setCurrentUser(null); // Admin sees all notifications
         }
         
         Navigator.pushReplacement(
