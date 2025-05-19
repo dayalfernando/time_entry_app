@@ -376,6 +376,77 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
+                    // Options Section
+                    Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            // TODO: Implement View Tasks
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor.withOpacity(0.8),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: const Text(
+                            'View Tasks',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () {
+                            // TODO: Implement List Tasks By Engineer
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor.withOpacity(0.6),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: const Text(
+                            'List Tasks By Engineer',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () {
+                            // TODO: Implement Reports
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor.withOpacity(0.4),
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: const Text(
+                            'Reports',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
                     // Maintenance Image Section
                     Container(
                       height: 240,
